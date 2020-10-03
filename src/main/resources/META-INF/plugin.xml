@@ -1,19 +1,21 @@
 <idea-plugin>
     <id>com.github.ovargasmahisoft.jdbcplugin</id>
-    <name>jdbc-plugin</name>
+    <name>jdbc code generation</name>
     <vendor>ovargasmahisoft</vendor>
 
     <!-- Product and plugin compatibility requirements -->
     <!-- https://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html -->
     <depends>com.intellij.modules.platform</depends>
+    <depends>com.intellij.modules.ultimate</depends>
+    <depends>com.intellij.modules.lang</depends>
+    <depends>com.intellij.modules.all</depends>
+    <depends>com.intellij.modules.java</depends>
+    <depends>com.intellij.database</depends>
 
-    <extensions defaultExtensionNs="com.intellij">
-        <applicationService serviceImplementation="com.github.ovargasmahisoft.jdbcplugin.services.MyApplicationService"/>
-        <projectService serviceImplementation="com.github.ovargasmahisoft.jdbcplugin.services.MyProjectService"/>
-    </extensions>
-
-    <projectListeners>
-        <listener class="com.github.ovargasmahisoft.jdbcplugin.listeners.MyProjectManagerListener"
-                  topic="com.intellij.openapi.project.ProjectManagerListener"/>
-    </projectListeners>
+    <actions>
+        <action id="jdbcCode"
+                class="com.github.ovargasmahisoft.jdbcplugin.actions.GenerateCodeAction" text="Generate JDBC Code">
+            <add-to-group group-id="DatabaseViewPopupMenu" anchor="last"/>
+        </action>
+    </actions>
 </idea-plugin>

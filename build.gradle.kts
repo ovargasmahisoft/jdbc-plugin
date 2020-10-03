@@ -41,6 +41,7 @@ repositories {
 }
 dependencies {
     detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:1.13.1")
+    compileOnly(files("/Users/orlandovargas/Library/Application Support/JetBrains/Toolbox/apps/IDEA-U/ch-0/202.7319.50/IntelliJ IDEA.app/Contents/plugins/DatabaseTools/lib/database-openapi.jar"))
 }
 
 // Configure gradle-intellij-plugin plugin.
@@ -55,7 +56,7 @@ intellij {
 //  Plugin Dependencies:
 //  https://www.jetbrains.org/intellij/sdk/docs/basics/plugin_structure/plugin_dependencies.html
 //
-//  setPlugins("java")
+    setPlugins("java")
 }
 
 // Configure detekt plugin.
@@ -74,8 +75,8 @@ detekt {
 tasks {
     // Set the compatibility versions to 1.8
     withType<JavaCompile> {
-        sourceCompatibility = "1.8"
-        targetCompatibility = "1.8"
+        sourceCompatibility = "11"
+        targetCompatibility = "11"
     }
     listOf("compileKotlin", "compileTestKotlin").forEach {
         getByName<KotlinCompile>(it) {
