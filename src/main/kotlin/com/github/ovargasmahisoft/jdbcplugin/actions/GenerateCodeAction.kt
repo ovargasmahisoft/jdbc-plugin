@@ -5,11 +5,16 @@ import com.github.ovargasmahisoft.jdbcplugin.utils.javaDefinition
 import com.github.ovargasmahisoft.jdbcplugin.utils.snakeToUpperCamelCase
 import com.intellij.database.psi.DbTable
 import com.intellij.database.util.DasUtil
-import com.intellij.lang.java.JavaLanguage
+import com.intellij.ide.projectView.ProjectView
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.LangDataKeys
+import com.intellij.openapi.vfs.VirtualFile
+import com.intellij.openapi.vfs.VirtualFileManager
 import com.intellij.psi.PsiFileFactory
+import com.intellij.psi.PsiManager
+import com.intellij.psi.PsiPackage
+import java.io.FileWriter
 
 
 class GenerateCodeAction : AnAction() {
@@ -20,45 +25,41 @@ class GenerateCodeAction : AnAction() {
             return
         }
 
-        val sb = StringBuilder()
-
         val dialog = OptionsDialogWrapper(e.project!!)
         dialog.show()
 
-        if (dialog.isOK) {
-            for (element in elements) {
-                if (element !is DbTable) {
-                    continue
-                }
+        if (!dialog.isOK) return
 
-                sb.append("${element.name}\r\n")
-
-                if (dialog.data().generateDAO && dialog.data().daoPackage != null) {
-
-                    val sb = StringBuilder()
-                    for (column in DasUtil.getColumns(element)) {
-                        sb.append(column.javaDefinition())
-                    }
-
-                    val className = element.name.snakeToUpperCamelCase()
-                    val psiFile = PsiFileFactory.getInstance(e.project)
-                        .createFileFromText("${className}.java", JavaLanguage.INSTANCE,
-                            "package ${dialog.data().daoPackage.qualifiedName};\n\n" +
-                                "import lombok.Builder;\n" +
-                                "import lombok.Value;\n\n" +
-                                "@Value\n" +
-                                "@Builder\n" +
-                                "public class $className {\n" +
-                                "$sb" +
-                                "}"
-                        )
-
-                    dialog.data().daoPackage.directories[0].add(psiFile)
-
-                }
+        elements
+            .filterIsInstance<DbTable>()
+            .forEach { tbl ->
+                buildDaoFile(dialog.data().daoPackage, tbl)
             }
 
+        ProjectView.getInstance(e.project).refresh()
+    }
+
+    private fun buildDaoFile(psiPackage: PsiPackage, element: DbTable) {
+        val sb = StringBuilder()
+        for (column in DasUtil.getColumns(element)) {
+            sb.append(column.javaDefinition())
         }
+
+        val className = element.name.snakeToUpperCamelCase()
+
+        val writer = FileWriter("${psiPackage.directories[0].virtualFile.canonicalPath}/${className}.java")
+        writer.write("package ${psiPackage.qualifiedName};\n\n" +
+            "import lombok.Builder;\n" +
+            "import lombok.Value;\n\n" +
+            "@Value\n" +
+            "@Builder\n" +
+            "public class $className {\n" +
+            "$sb" +
+            "}")
+        writer.flush()
+        writer.close()
+
+        ProjectView.getInstance(psiPackage.project).refresh()
     }
 
 
