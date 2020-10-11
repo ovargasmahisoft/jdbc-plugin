@@ -12,12 +12,18 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.Map;
+import java.util.stream.Collectors;
+import org.springframework.stereotype.Component;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 
+@Component
 public class ${table.repositoryClassName} extends JdbcBaseRepository implements ${table.repositoryInterfaceName} {
     <% table.columns.each { %>
     public static final String ${it.constantName} = "${it.columnName}";<% } %>
 
-    protected ${table.repositoryClassName}(DataSource dataSource) {
+    public ${table.repositoryClassName}(DataSource dataSource) {
         super(dataSource);
     }
 
@@ -40,34 +46,52 @@ public class ${table.repositoryClassName} extends JdbcBaseRepository implements 
 
     @Override
     public ${table.daoClassName} create(${table.daoClassName} dao) {
-        return null;
-    }
+        <%
+            def columns = table.columns.findAll { !it.primaryKey }.collect { it.columnName}.join(", ")
+            def values = table.columns.findAll { !it.primaryKey }.collect { ":" + it.columnName}.join(", ")
+        %>
+        String sql = "INSERT INTO ${table.tableName} (${columns})" +
+            "VALUES (${values})";
 
-    @Override
-    public List<${table.daoClassName}> createMany(List<${table.daoClassName}> daoList) {
-        return null;
+        MapSqlParameterSource parameters = new MapSqlParameterSource(
+            buildParameters(dao)
+        );
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+        namedParameterJdbcTemplate().update(sql, parameters, keyHolder);
+        return get(keyHolder.getKey().longValue());
     }
 
     @Override
     public ${table.daoClassName} update(${table.daoClassName} dao) {
-        return null;
+        return updateMany(Collections.singletonList(dao))
+                .stream().findFirst().orElse(null);
     }
 
     @Override
     public List<${table.daoClassName}> updateMany(List<${table.daoClassName}> daoList) {
-        return null;
+        String sql = "UPDATE ${table.tableName} SET " +<%
+        table.columns.findAll{ !it.primaryKey }.each {
+        %>
+                "${it.columnName} = :${it.columnName}<%
+                if(it != table.columns.last()) { %>,<% } %> " +<% } %>
+                "WHERE ${table.primaryKey.columnName} = :${table.primaryKey.columnName}";
+
+        namedParameterJdbcTemplate().batchUpdate(sql,
+                (Map<String, Object>[]) daoList.stream().map(this::buildParameters).toArray());
+
+        return getMany(daoList.stream().map(${table.daoClassName}::getId).collect(Collectors.toList()));
     }
 
-    private Map<String, Object> buildProperties(${table.daoClassName} dao) {
+    private Map<String, Object> buildParameters(${table.daoClassName} dao) {
         return Map.ofEntries(<% table.columns.each { %>
-            Map.entry(${it.constantName}, dao.get${it.fieldName.capitalize()}())<%
+                Map.entry(${it.constantName}, dao.${it.required && it.dataType == "boolean" ? "is" : "get"}${it.fieldName.capitalize()}())<%
             if(it != table.columns.last()){%>,<% }%><% } %>
         );
     }
 
     private ${table.daoClassName} mapRow(ResultSet rs, int rowNum) throws SQLException {
         return ${table.daoClassName}.builder()<% table.columns.each { %>
-            .${it.fieldName}(${it.resultSetMapper})<% } %>
+                .${it.fieldName}(${it.resultSetMapper})<% } %>
             .build();
     }
 

@@ -31,6 +31,7 @@ public class OptionsForm implements IOptionsForm {
     private PsiPackage repositoryPackage;
 
     public OptionsForm(Project project) {
+
         daoPackageButton.addActionListener(e -> {
             daoPackage = getPackagePath(project);
             daoPackageTextField.setText(daoPackage.getQualifiedName());

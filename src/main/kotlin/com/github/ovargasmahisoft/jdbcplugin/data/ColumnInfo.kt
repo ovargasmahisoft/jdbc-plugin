@@ -21,6 +21,7 @@ class ColumnInfo {
         columnName = column.name
         nullableDataType = column.nullableJavaType()
         resultSetMapper = (if (column.isNotNull) column.nonNullResultSetMap() else column.nullableResultSetMap()) + constantName + ")"
+        required = column.isNotNull
     }
 
     val constantName: String
@@ -30,4 +31,5 @@ class ColumnInfo {
     val nullableDataType: String
     val primaryKey: Boolean
     val resultSetMapper: String
+    val required: Boolean
 }

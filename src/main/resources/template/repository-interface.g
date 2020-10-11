@@ -11,8 +11,6 @@ public interface ${table.repositoryInterfaceName} {
 
     ${table.daoClassName} create(${table.daoClassName} dao);
 
-    List<${table.daoClassName}> createMany(List<${table.daoClassName}> daoList);
-
     ${table.daoClassName} update(${table.daoClassName} dao);
 
     List<${table.daoClassName}> updateMany(List<${table.daoClassName}> daoList);
