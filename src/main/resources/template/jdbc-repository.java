@@ -83,8 +83,15 @@ public class ${table.repositoryClassName} extends JdbcBaseRepository implements 
     }
 
     private Map<String, Object> buildParameters(${table.daoClassName} dao) {
-        return Map.ofEntries(<% table.columns.each { %>
-                Map.entry(${it.constantName}, dao.${it.required && it.dataType == "boolean" ? "is" : "get"}${it.fieldName.capitalize()}())<%
+        return Map.ofEntries(<% table.columns.each {
+                def daoToJdbcMap = "dao.get" + it.fieldName.capitalize() + "()"
+                if(it.dataType == "boolean") {
+                    daoToJdbcMap = "dao.is" + it.fieldName.capitalize() + "()"
+                }
+                if(it.dataType == "Instant") {
+                    daoToJdbcMap = "JdbcUtil.timestampOrNull(dao.get"  + it.fieldName.capitalize() + "())"
+                }%>
+                Map.entry(${it.constantName}, ${daoToJdbcMap})<%
             if(it != table.columns.last()){%>,<% }%><% } %>
         );
     }

@@ -9,7 +9,7 @@ fun DasColumn.daoJavaType(): String {
         "float" -> if (this.isNotNull) "float" else "Float"
         "double" -> if (this.isNotNull) "double" else "Double"
         "bit" -> if (this.isNotNull) "boolean" else "Boolean"
-        "varchar", "char", "text" -> "String"
+        "varchar", "char", "text", "json" -> "String"
         "timestamp" -> "Instant"
         else -> "Object"
     }
@@ -22,7 +22,7 @@ fun DasColumn.nullableJavaType(): String {
         "float" -> "Float"
         "double" -> "Double"
         "bit" -> "Boolean"
-        "varchar", "char", "text" -> "String"
+        "varchar", "char", "text", "json" -> "String"
         "timestamp" -> "Instant"
         else -> "Object"
     }
@@ -35,7 +35,7 @@ fun DasColumn.nonNullResultSetMap(): String {
         "float" -> "rs.getFloat("
         "double" -> "rs.getDouble("
         "bit" -> "rs.getBoolean("
-        "varchar", "char", "text" -> "rs.getString("
+        "varchar", "char", "text", "json" -> "rs.getString("
         "timestamp" -> "JdbcUtil.instantOrNull(rs, "
         else -> "rs.getObject("
     }
@@ -48,7 +48,7 @@ fun DasColumn.nullableResultSetMap(): String {
         "float" -> "JdbcUtil.floatOrNull(rs, "
         "double" -> "JdbcUtil.doubleOrNull(rs, "
         "bit" -> "JdbcUtil.booleanOrNull(rs, "
-        "varchar", "char", "text" -> "rs.getString("
+        "varchar", "char", "text", "json" -> "rs.getString("
         "timestamp" -> "JdbcUtil.instantOrNull(rs, "
         else -> "rs.getObject("
     }
