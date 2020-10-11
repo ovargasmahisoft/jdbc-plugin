@@ -1,0 +1,3 @@
+${table.item}: {<%
+    def sItems = table.items.collect { it.item }.join(", ")
+%>${sItems}}

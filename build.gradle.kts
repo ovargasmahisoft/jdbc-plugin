@@ -40,6 +40,8 @@ repositories {
     jcenter()
 }
 dependencies {
+    implementation("org.codehaus.groovy:groovy-templates:2.5.11")
+    implementation("com.github.spullara.mustache.java:compiler:0.9.5")
     detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:1.13.1")
     compileOnly(files("/Users/orlandovargas/Library/Application Support/JetBrains/Toolbox/apps/IDEA-U/ch-0/202.7660.26/IntelliJ IDEA.app/Contents/plugins/DatabaseTools/lib/database-openapi.jar"))
 }
