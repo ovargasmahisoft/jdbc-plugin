@@ -1,6 +1,5 @@
 package com.github.ovargasmahisoft.jdbcplugin.actions
 
-import com.github.mustachejava.DefaultMustacheFactory
 import com.github.ovargasmahisoft.jdbcplugin.data.TableInfo
 import com.github.ovargasmahisoft.jdbcplugin.ui.OptionsDialogWrapper
 import com.intellij.database.psi.DbTable
@@ -11,7 +10,6 @@ import com.intellij.openapi.actionSystem.LangDataKeys
 import com.intellij.psi.PsiPackage
 import groovy.text.GStringTemplateEngine
 import java.io.FileWriter
-import java.io.StringReader
 import java.nio.file.Files
 import java.nio.file.Paths
 
@@ -31,11 +29,11 @@ class GenerateCodeAction : AnAction() {
 
         elements
             .filterIsInstance<DbTable>()
-            .map { tbl -> TableInfo(tbl, dialog.data().daoPackage.qualifiedName) }
+            .map { tbl -> TableInfo(tbl, dialog.data().basePackage.qualifiedName) }
             .forEach { tbl ->
-                buildDaoFile(dialog.data().daoPackage, tbl)
-                buildInterfaceRepository(dialog.data().daoPackage, tbl)
-                buildClassRepository(dialog.data().daoPackage, tbl)
+                buildDaoFile(dialog.data().basePackage, tbl)
+                buildInterfaceRepository(dialog.data().basePackage, tbl)
+                buildClassRepository(dialog.data().basePackage, tbl)
             }
 
         ProjectView.getInstance(e.project).refresh()
@@ -52,7 +50,7 @@ class GenerateCodeAction : AnAction() {
     }
 
     private fun buildDaoFile(psiPackage: PsiPackage, table: TableInfo) {
-        val templateText = GenerateCodeAction::class.java.getResource("/template/dao.g").readText()
+        val templateText = GenerateCodeAction::class.java.getResource("/template/dao.java").readText()
 
         val engine = GStringTemplateEngine()
         val template = engine
@@ -63,26 +61,12 @@ class GenerateCodeAction : AnAction() {
         Files.createDirectories(Paths.get("${path}/domain"))
         val writer = FileWriter("${path}/domain/${table.daoClassName}.java")
         writer.write(value)
-        writer.flush()
-        writer.close()
-    }
-
-    private fun buildDaoFileMustache(psiPackage: PsiPackage, table: TableInfo) {
-        val templateText = GenerateCodeAction::class.java.getResource("/template/Dto.java").readText()
-
-        val mustache = DefaultMustacheFactory().compile(StringReader(templateText), "dao")
-
-        val path = psiPackage.directories[0].virtualFile.canonicalPath
-
-        Files.createDirectories(Paths.get("${path}/domain"))
-        val writer = FileWriter("${path}/domain/${table.daoClassName}.java")
-        mustache.execute(writer, table)
         writer.flush()
         writer.close()
     }
 
     private fun buildInterfaceRepository(psiPackage: PsiPackage, table: TableInfo) {
-        val templateText = GenerateCodeAction::class.java.getResource("/template/repository-interface.g").readText()
+        val templateText = GenerateCodeAction::class.java.getResource("/template/repository-interface.java").readText()
 
         val engine = GStringTemplateEngine()
         val template = engine
@@ -95,26 +79,12 @@ class GenerateCodeAction : AnAction() {
         Files.createDirectories(Paths.get(path))
         val writer = FileWriter("${path}/${table.repositoryInterfaceName}.java")
         writer.write(value)
-        writer.flush()
-        writer.close()
-    }
-
-    private fun buildInterfaceRepositoryMustache(psiPackage: PsiPackage, table: TableInfo) {
-        val templateText = GenerateCodeAction::class.java.getResource("/template/RepositoryInterface.java").readText()
-
-        val mustache = DefaultMustacheFactory().compile(StringReader(templateText), "interface")
-
-        val path = "${psiPackage.directories[0].virtualFile.canonicalPath}/repository"
-
-        Files.createDirectories(Paths.get(path))
-        val writer = FileWriter("${path}/${table.repositoryInterfaceName}.java")
-        mustache.execute(writer, table)
         writer.flush()
         writer.close()
     }
 
     private fun buildClassRepository(psiPackage: PsiPackage, table: TableInfo) {
-        val templateText = GenerateCodeAction::class.java.getResource("/template/jdbc-repository.g").readText()
+        val templateText = GenerateCodeAction::class.java.getResource("/template/jdbc-repository.java").readText()
 
         val engine = GStringTemplateEngine()
         val template = engine
@@ -132,17 +102,4 @@ class GenerateCodeAction : AnAction() {
 
     }
 
-    private fun buildClassRepositoryMustache(psiPackage: PsiPackage, table: TableInfo) {
-        val templateText = GenerateCodeAction::class.java.getResource("/template/JdbcRepository.java").readText()
-
-        val mustache = DefaultMustacheFactory().compile(StringReader(templateText), "jdbc")
-
-        val path = "${psiPackage.directories[0].virtualFile.canonicalPath}/repository/jdbc"
-
-        Files.createDirectories(Paths.get(path))
-        val writer = FileWriter("${path}/${table.repositoryClassName}.java")
-        mustache.execute(writer, table)
-        writer.flush()
-        writer.close()
-    }
 }

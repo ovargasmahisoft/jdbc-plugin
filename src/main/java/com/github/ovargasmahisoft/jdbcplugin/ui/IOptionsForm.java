@@ -7,25 +7,12 @@ public interface IOptionsForm {
 
     boolean getGenerateDAO();
 
-    PsiPackage getDaoPackage();
 
     boolean getGenerateRepository();
 
-    PsiPackage getRepositoryPackage();
+    boolean getGenerateTestClass();
 
-    boolean getGenerateGet();
+    PsiPackage getBasePackage();
 
-    boolean getGenerateGetMany();
 
-    boolean getGenerateCreate();
-
-    boolean getGenerateCreateMany();
-
-    boolean getGenerateUpdate();
-
-    boolean getGenerateUpdateMany();
-
-    boolean getGenerateDelete();
-
-    boolean getGenerateDeleteMany();
 }
