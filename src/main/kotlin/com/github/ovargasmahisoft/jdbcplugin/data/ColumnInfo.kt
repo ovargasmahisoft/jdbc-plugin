@@ -22,6 +22,7 @@ class ColumnInfo {
         nullableDataType = column.nullableJavaType()
         resultSetMapper = (if (column.isNotNull) column.nonNullResultSetMap() else column.nullableResultSetMap()) + constantName + ")"
         required = column.isNotNull
+        size = if (column.dataType.size < 0) 32 else column.dataType.size
     }
 
     val constantName: String
@@ -32,4 +33,5 @@ class ColumnInfo {
     val primaryKey: Boolean
     val resultSetMapper: String
     val required: Boolean
+    val size: Int
 }

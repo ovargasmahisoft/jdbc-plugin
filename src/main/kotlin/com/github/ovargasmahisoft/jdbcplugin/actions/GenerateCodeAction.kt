@@ -34,6 +34,7 @@ class GenerateCodeAction : AnAction() {
                 buildDaoFile(dialog.data().basePackage, tbl)
                 buildInterfaceRepository(dialog.data().basePackage, tbl)
                 buildClassRepository(dialog.data().basePackage, tbl)
+                buildTestClassRepository(dialog.data().basePackage, tbl)
             }
 
         ProjectView.getInstance(e.project).refresh()
@@ -102,4 +103,23 @@ class GenerateCodeAction : AnAction() {
 
     }
 
+    private fun buildTestClassRepository(psiPackage: PsiPackage, table: TableInfo) {
+        val templateText = GenerateCodeAction::class.java.getResource("/template/repository-test.java").readText()
+
+        val engine = GStringTemplateEngine()
+        val template = engine
+            .createTemplate(templateText)
+            .make(mapOf(Pair("table", table)))
+        val value = template.toString()
+
+        val path = "${psiPackage.directories[0].virtualFile.canonicalPath}/repository/jdbc"
+            .replace("main/java", "test/java")
+
+        Files.createDirectories(Paths.get(path))
+        val writer = FileWriter("${path}/${table.repositoryClassName}Test.java")
+        writer.write(value)
+        writer.flush()
+        writer.close()
+
+    }
 }

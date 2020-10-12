@@ -1,3 +1,11 @@
 ${table.item}: {<%
     def sItems = table.items.findAll { it.item != "1" }.collect { it.item }.join(", ")
 %>${sItems}}
+
+<%
+    def alphabet = (('A'..'Z')+('a'..'z')+('0'..'9')).join()
+%>
+
+-${(1..5).collect {alphabet[new Random().nextInt(alphabet.length())]}.join()}-
+-${(1..10).collect {alphabet[new Random().nextInt(alphabet.length())]}.join()}-
+-${(1..15).collect {alphabet[new Random().nextInt(alphabet.length())]}.join()}-
