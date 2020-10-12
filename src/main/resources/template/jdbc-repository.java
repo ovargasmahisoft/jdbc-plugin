@@ -35,9 +35,8 @@ public class ${table.repositoryClassName} extends JdbcBaseRepository implements 
 
     @Override
     public List<${table.daoClassName}> getMany(List<${table.primaryKey.nullableDataType}> ids) {
-        Map<String, Object> parameters = Map.of(
-            "ids", ids
-        );
+        Map<String, Object> parameters = Map.of("ids", ids);
+
         return namedParameterJdbcTemplate().query(
                 "SELECT * FROM ${table.tableName} WHERE ${table.primaryKey.columnName} in (:ids)",
                 parameters,
@@ -81,6 +80,21 @@ public class ${table.repositoryClassName} extends JdbcBaseRepository implements 
 
         return getMany(daoList.stream().map(${table.daoClassName}::getId).collect(Collectors.toList()));
     }
+
+    @Override
+    public void delete(${table.primaryKey.dataType} id) {
+        deleteMany(Collections.singletonList(id));
+    }
+
+    @Override
+    public void deleteMany(List<${table.primaryKey.nullableDataType}> ids) {
+        Map<String, Object> parameters = Map.of("ids", ids);
+
+        namedParameterJdbcTemplate().update(
+            "DELETE FROM ${table.tableName} WHERE ${table.primaryKey.columnName} IN (:ids)",
+            parameters);
+    }
+
 
     private Map<String, Object> buildParameters(${table.daoClassName} dao) {
         return Map.ofEntries(<% table.columns.each {

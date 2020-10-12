@@ -15,4 +15,8 @@ public interface ${table.repositoryInterfaceName} {
 
     List<${table.daoClassName}> updateMany(List<${table.daoClassName}> daoList);
 
+    void delete(${table.primaryKey.dataType} id);
+
+    void deleteMany(List<${table.primaryKey.nullableDataType}> ids);
+
 }
