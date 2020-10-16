@@ -44,7 +44,7 @@ fun DasColumn.nonNullResultSetMap(): String {
 fun DasColumn.nullableResultSetMap(): String {
     return when (this.dataType.typeName) {
         "bigint" -> "JdbcUtil.longOrNull(rs, "
-        "integer", "int" -> "JdbcUtil.intOrNull(rs, "
+        "integer", "int" -> "JdbcUtil.integerOrNull(rs, "
         "float" -> "JdbcUtil.floatOrNull(rs, "
         "double" -> "JdbcUtil.doubleOrNull(rs, "
         "bit" -> "JdbcUtil.booleanOrNull(rs, "

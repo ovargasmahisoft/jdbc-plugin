@@ -9,3 +9,4 @@ ${table.item}: {<%
 -${(1..5).collect {alphabet[new Random().nextInt(alphabet.length())]}.join()}-
 -${(1..10).collect {alphabet[new Random().nextInt(alphabet.length())]}.join()}-
 -${(1..15).collect {alphabet[new Random().nextInt(alphabet.length())]}.join()}-
+

@@ -51,7 +51,7 @@ class GenerateCodeAction : AnAction() {
     }
 
     private fun buildDaoFile(psiPackage: PsiPackage, table: TableInfo) {
-        val templateText = GenerateCodeAction::class.java.getResource("/template/dao.java").readText()
+        val templateText = GenerateCodeAction::class.java.getResource("/template/dao.tpl").readText()
 
         val engine = GStringTemplateEngine()
         val template = engine
@@ -67,7 +67,7 @@ class GenerateCodeAction : AnAction() {
     }
 
     private fun buildInterfaceRepository(psiPackage: PsiPackage, table: TableInfo) {
-        val templateText = GenerateCodeAction::class.java.getResource("/template/repository-interface.java").readText()
+        val templateText = GenerateCodeAction::class.java.getResource("/template/repository-interface.tpl").readText()
 
         val engine = GStringTemplateEngine()
         val template = engine
@@ -85,7 +85,7 @@ class GenerateCodeAction : AnAction() {
     }
 
     private fun buildClassRepository(psiPackage: PsiPackage, table: TableInfo) {
-        val templateText = GenerateCodeAction::class.java.getResource("/template/jdbc-repository.java").readText()
+        val templateText = GenerateCodeAction::class.java.getResource("/template/jdbc-repository.tpl").readText()
 
         val engine = GStringTemplateEngine()
         val template = engine
@@ -104,7 +104,7 @@ class GenerateCodeAction : AnAction() {
     }
 
     private fun buildTestClassRepository(psiPackage: PsiPackage, table: TableInfo) {
-        val templateText = GenerateCodeAction::class.java.getResource("/template/repository-test.java").readText()
+        val templateText = GenerateCodeAction::class.java.getResource("/template/repository-test.tpl").readText()
 
         val engine = GStringTemplateEngine()
         val template = engine
