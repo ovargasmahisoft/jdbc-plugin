@@ -18,4 +18,12 @@
             <add-to-group group-id="DatabaseViewPopupMenu" anchor="last"/>
         </action>
     </actions>
+
+    <extensions defaultExtensionNs="com.intellij">
+        <applicationConfigurable parentId="tools"
+                                 instance="com.github.ovargasmahisoft.jdbcplugin.configuration.JdbcConfigurable"
+                                 id="com.github.ovargasmahisoft.jdbcplugin.configuration.JdbcConfigurable"
+                                 displayName="JDBC-Plugin"/>
+        <applicationService serviceImplementation="com.github.ovargasmahisoft.jdbcplugin.configuration.AppSettingsState"/>
+    </extensions>
 </idea-plugin>
