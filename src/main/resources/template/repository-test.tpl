@@ -13,6 +13,8 @@ import javax.sql.DataSource;
 import java.time.Instant;
 import java.util.Random;
 <% def alphabet = (('A'..'Z')+('a'..'z')+('0'..'9')).join() %>
+
+@JdbcTest
 public class ${table.repositoryClassName}Test {
 
     @Autowired

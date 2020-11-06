@@ -100,12 +100,11 @@ public class ${table.repositoryClassName} extends JdbcBaseRepository implements 
             parameters);
     }
 
-
     private Map<String, Object> buildParameters(${table.daoClassName} dao) {
         return Map.ofEntries(<% table.columns.each {
                 def daoToJdbcMap = "dao.get" + it.fieldName.capitalize() + "()"
                 if(it.dataType == "boolean") {
-                    daoToJdbcMap = "dao.is" + it.fieldName.capitalize() + "()"
+                    daoToJdbcMap = (it.fieldName.startsWith("is") ? "dao." + it.fieldName :  "dao.is" + it.fieldName.capitalize()) + "()"
                 }
                 if(it.dataType == "Instant") {
                     daoToJdbcMap = "JdbcUtil.timestampOrNull(dao.get"  + it.fieldName.capitalize() + "())"

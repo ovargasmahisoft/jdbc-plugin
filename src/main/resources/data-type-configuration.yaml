@@ -1,0 +1,44 @@
+mysql:
+  java:
+    char:
+      nullable: String
+    varchar:
+      nullable: String
+    longvarchar:
+      nullable: String
+    bigint:
+      nullable: Long
+      nonNullable: long
+    int:
+      nullable: Integer
+      nonNullable: int
+    bit:
+      nullable: Boolean
+      nonNullable: boolean
+    tinyint:
+      nullable: Byte
+      nonNullable: byte
+    smallint:
+      nullable: Short
+      nonNullable: short
+    mediumint:
+      nullable: Short
+      nonNullable: short
+    float:
+      nullable: Float
+      nonNullable: float
+    double:
+      nullable: Double
+      nonNullable: double
+    numeric:
+      nullable: java.math.BigDecimal
+    decimal:
+      nullable: java.math.BigDecimal
+    timestamp:
+      nullable: java.time.Instant
+    binary:
+      nullable: byte[]
+    varbinary:
+      nullable: byte[]
+    longvarbinary:
+      nullable: byte[]

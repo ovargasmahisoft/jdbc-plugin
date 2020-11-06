@@ -25,7 +25,7 @@ public class JdbcConfigurationComponent {
     private JButton button3;
     private JTextField testTemplateTF;
     private JButton button4;
-    private JButton restoreToDefaultButton;
+    private JButton restoreToDefaultBtn;
     private JPanel templatesPanel;
     private JPanel conventionPanel;
     private JTextField doPackageTF;
@@ -42,6 +42,8 @@ public class JdbcConfigurationComponent {
     private JLabel doPackageLbl;
     private JLabel repoPackageLbl;
     private JLabel implPackageLbl;
+
+    private OnRestoreDefaultFunction onRestoreDefaultFunction;
 
     public JdbcConfigurationComponent() {
         conventionPanel.setBorder(BorderFactory.createTitledBorder("Naming convention"));
@@ -70,6 +72,12 @@ public class JdbcConfigurationComponent {
         repoPackageTF.addPropertyChangeListener(this::OnChange);
         implPackageTF.addPropertyChangeListener(this::OnChange);
 
+        restoreToDefaultBtn.addActionListener(e -> {
+            if (onRestoreDefaultFunction != null) {
+                onRestoreDefaultFunction.onRestore(this);
+                refresh();
+            }
+        });
     }
 
 
@@ -213,6 +221,9 @@ public class JdbcConfigurationComponent {
         implPackageTF.setText(value);
     }
 
+    public void setOnRestoreDefaultFunction(OnRestoreDefaultFunction function) {
+        onRestoreDefaultFunction = function;
+    }
 
     private void refresh() {
         doExampleLbl.setText(getDoPrefix() + "Product" + getDoSuffix());

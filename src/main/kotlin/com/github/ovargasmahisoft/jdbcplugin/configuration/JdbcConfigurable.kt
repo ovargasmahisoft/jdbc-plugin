@@ -18,6 +18,7 @@ open class JdbcConfigurable : Configurable {
 
     override fun createComponent(): JComponent? {
         configurationComponent = JdbcConfigurationComponent()
+        configurationComponent.setOnRestoreDefaultFunction(this::restore)
         return configurationComponent.panel
     }
 
@@ -61,7 +62,7 @@ open class JdbcConfigurable : Configurable {
 
         settings.doPackage = configurationComponent.doPackage
         settings.repoPackage = configurationComponent.repoPackage
-        settings.implTemplate = configurationComponent.implPackage
+        settings.implPackage = configurationComponent.implPackage
     }
 
     override fun reset() {
@@ -84,5 +85,11 @@ open class JdbcConfigurable : Configurable {
         configurationComponent.doPackage = settings.doPackage
         configurationComponent.repoPackage = settings.repoPackage
         configurationComponent.implPackage = settings.implPackage
+    }
+
+    private fun restore(component: JdbcConfigurationComponent) {
+        val settings = AppSettingsState.getInstance()
+        settings.loadState(AppSettingsState())
+        reset()
     }
 }
